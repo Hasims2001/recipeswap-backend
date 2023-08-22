@@ -7,16 +7,19 @@ const auth = async (req, res, next) => {
     if (token) {
         try {
             let obj = await BlackListModel.findOne({ token: token });
+
             if (obj) {
                 res.status(200).json({ "error": "Login again...", issue: true });
             } else {
                 jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
                     if (err) return err;
                     if (decoded) {
+
                         const requested = {
                             ...req.body,
                             userId: decoded.userId,
-                            username: decoded.username
+                            username: decoded.username,
+                            email: decoded.email
                         };
 
                         req.body = requested;
