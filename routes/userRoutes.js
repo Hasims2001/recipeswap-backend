@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const { BlackListModel } = require("../model/blacklistModel");
 const sendEmail = require("../utils/sendEmail");
 const { auth } = require("../middleware/auth.middleware");
+const { RecipeModel } = require("../model/recipeModel");
 require('dotenv').config();
 
 
@@ -161,7 +162,15 @@ userRouter.get("/logout", async (req, res) => {
 
 })
 
-
+userRouter.delete("/delete", auth, async (req, res) => {
+    try {
+        await RecipeModel.deleteMany({ email: req.body.email });
+        await UserModel.deleteOne({ email: req.body.email });
+        res.status(200).json({ message: "User Account has been deleted.", issue: false });
+    } catch (error) {
+        res.status(200).json({ "error": error.message, issue: true })
+    }
+})
 module.exports = {
     userRouter
 }
