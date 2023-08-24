@@ -8,7 +8,7 @@ const userSchema = mongoose.Schema({
     followers: [String],
     following: [String],
     token: String,
-    comments
+    review: [Object],
 })
 
 const UserModel = mongoose.model("user", userSchema);
