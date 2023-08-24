@@ -134,7 +134,7 @@ userRouter.post("/resetpassword/:token", async (req, res) => {
                 })
 
             } else {
-                res.status(200).json({ "error": "User Not Found!", issue: true })
+                res.status(200).json({ "error": "Token is expired!", issue: true })
             }
         } catch (error) {
             res.status(200).json({ "error": error.message, issue: true })
