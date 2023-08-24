@@ -6,20 +6,14 @@ const { BlackListModel } = require("../model/blacklistModel");
 const sendEmail = require("../utils/sendEmail");
 const { auth } = require("../middleware/auth.middleware");
 const { RecipeModel } = require("../model/recipeModel");
+const { admin } = require("../middleware/admin.middelware");
 require('dotenv').config();
 
 
 const userRouter = express.Router();
 
 
-userRouter.get("/", auth, async (req, res) => {
-    try {
-        let users = await UserModel.find();
-        res.status(200).json({ users, issue: false });
-    } catch (error) {
-        res.status(200).json({ "error": error.message, issue: true })
-    }
-})
+
 
 userRouter.post("/register", async (req, res) => {
 
@@ -71,7 +65,7 @@ userRouter.post("/login", async (req, res) => {
 
                         res.status(200).json({ "message": "Login successful!", "token": token, issue: false })
                     } else {
-                        res.status(200).json({ "error": "Invalid Password!", issue: true })
+                        res.status(200).json({ "error": "Invalid Password!", user: { username: user.username, email: user.email }, issue: true })
                     }
                 })
             } else {
@@ -96,7 +90,7 @@ userRouter.post("/forgot", async (req, res) => {
                 const token = jwt.sign({ userId: user._id, username: user.username }, process.env.JWT_RESET_KEY);
 
 
-                const text = `here is the link to forgot Password, try to update Password  ${process.env.BASEURL}/${token}`;
+                const text = `here is the link to forgot Password, try to update Password  ${process.env.BASEURL}/reset_password/${token}`;
 
                 let obj = await sendEmail(user.email, "Forgot Password", text);
                 if (!obj.issue) {
@@ -162,7 +156,7 @@ userRouter.get("/logout", async (req, res) => {
 
 })
 
-userRouter.delete("/delete", auth, async (req, res) => {
+userRouter.delete("/delete", admin, async (req, res) => {
     try {
         await RecipeModel.deleteMany({ email: req.body.email });
         await UserModel.deleteOne({ email: req.body.email });
