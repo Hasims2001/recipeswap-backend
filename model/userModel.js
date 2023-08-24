@@ -7,7 +7,8 @@ const userSchema = mongoose.Schema({
     password: String,
     followers: [String],
     following: [String],
-    token: String
+    token: String,
+    comments
 })
 
 const UserModel = mongoose.model("user", userSchema);

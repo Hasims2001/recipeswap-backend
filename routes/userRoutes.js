@@ -38,7 +38,7 @@ userRouter.post("/register", async (req, res) => {
 
                     let newuser = new UserModel(newbody);
                     await newuser.save();
-                    res.status(200).json({ "message": "The new user has been registered", "registeredUser": req.body, issue: false });
+                    res.status(200).json({ "message": "The new user has been registered", issue: false });
                 })
 
             }
@@ -63,9 +63,9 @@ userRouter.post("/login", async (req, res) => {
                     if (result) {
                         const token = jwt.sign({ userId: user._id, username: user.username, email: user.email }, process.env.JWT_KEY);
 
-                        res.status(200).json({ "message": "Login successful!", "token": token, issue: false })
+                        res.status(200).json({ "message": "Login successful!", user: { username: user.username, email: user.email }, "token": token, issue: false })
                     } else {
-                        res.status(200).json({ "error": "Invalid Password!", user: { username: user.username, email: user.email }, issue: true })
+                        res.status(200).json({ "error": "Invalid Password!", issue: true })
                     }
                 })
             } else {
