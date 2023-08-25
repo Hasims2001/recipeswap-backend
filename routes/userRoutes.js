@@ -48,6 +48,16 @@ userRouter.post("/register", async (req, res) => {
     }
 })
 
+userRouter.get("/profile", auth, async (req, res) => {
+    const email = req.body.email;
+    try {
+        let users = await UserModel.findOne({email:email});
+        res.status(200).json({ users, issue: false });
+    } catch (error) {
+        res.status(200).json({ "error": error.message, issue: true })
+    }
+})
+
 
 userRouter.post("/login", async (req, res) => {
     const { password, email } = req.body;

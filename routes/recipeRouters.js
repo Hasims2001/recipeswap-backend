@@ -15,7 +15,7 @@ recipeRouter.get("/", async (req, res) => {
 })
 
 recipeRouter.get("/profile", auth, async (req, res) => {
-    const { userId } = req.headers.auth;
+    const { userId } = req.body;
     try {
         let recipes = await RecipeModel.find({ _id: userId });
         res.status(200).json({ recipes, issue: false });

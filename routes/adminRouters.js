@@ -118,6 +118,16 @@ adminRouter.get("/users", admin, async (req, res) => {
     }
 })
 
+adminRouter.post("/users/profile", admin, async (req, res) => {
+    const email = req.body.email;
+    try {
+        let users = await UserModel.findOne({email});
+        res.status(200).json({ users, issue: false });
+    } catch (error) {
+        res.status(200).json({ "error": error.message, issue: true })
+    }
+})
+
 
 adminRouter.post("/users/add", admin, async (req, res) => {
 
@@ -131,12 +141,11 @@ adminRouter.post("/users/add", admin, async (req, res) => {
             if (user) {
                 res.status(200).json({ "error": "User has already registered", issue: true })
             } else {
-                console.log("else")
+                
                 bcrypt.hash(password, 5, async (err, hash) => {
                     if (err) return err;
                     req.body.password = hash;
-                console.log("hash")
-
+                
                     const newbody = {
                         ...req.body,
                         followers: [],
