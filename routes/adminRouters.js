@@ -2,7 +2,7 @@ const express = require("express");
 const { RecipeModel } = require("../model/recipeModel");
 const { admin } = require("../middleware/admin.middelware");
 const { UserModel } = require("../model/userModel");
-
+const bcrypt = require("bcrypt");
 
 const adminRouter = express.Router();
 adminRouter.get("/recipes", admin, async (req, res) => {
@@ -131,9 +131,12 @@ adminRouter.post("/users/add", admin, async (req, res) => {
             if (user) {
                 res.status(200).json({ "error": "User has already registered", issue: true })
             } else {
+                console.log("else")
                 bcrypt.hash(password, 5, async (err, hash) => {
                     if (err) return err;
                     req.body.password = hash;
+                console.log("hash")
+
                     const newbody = {
                         ...req.body,
                         followers: [],
