@@ -44,9 +44,9 @@ recipeRouter.get("/:id", async (req, res) => {
     }
 })
 recipeRouter.get("/profile", auth, async (req, res) => {
-    const { userId } = req.body;
+    const { email } = req.body;
     try {
-        let recipes = await RecipeModel.find({ _id: userId });
+        let recipes = await RecipeModel.find({ email: email });
         res.status(200).json({ recipes, issue: false });
     } catch (error) {
         res.status(200).json({ "error": error.message, issue: true })
