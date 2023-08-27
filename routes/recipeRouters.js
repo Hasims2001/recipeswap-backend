@@ -4,9 +4,28 @@ const { RecipeModel } = require("../model/recipeModel");
 
 
 const recipeRouter = express.Router();
+
+
+
 recipeRouter.get("/", async (req, res) => {
+    let recipes = null;
+    const {search} = req.query;
     try {
-        let recipes = await RecipeModel.find();
+        if(search){
+            recipes = await RecipeModel.aggregate([
+                {
+                    $match: {
+                      $or: [
+                        { "recipeName": { $regex: search, $options: "i" } },
+                        { "username": { $regex: search, $options: "i" } },
+                        { "mealType": { $regex: search, $options: "i" } }
+                      ]
+                    }
+                  }
+            ]).exec();
+        }else{
+            recipes = await RecipeModel.find();
+        }
         res.status(200).json({ recipes, issue: false });
     } catch (error) {
         res.status(200).json({ "error": error.message, issue: true })
@@ -14,6 +33,16 @@ recipeRouter.get("/", async (req, res) => {
     }
 })
 
+recipeRouter.get("/:id", async (req, res) => {
+    const{id} = req.params;
+    try {
+        let recipes = await RecipeModel.findOne({_id : id});
+        res.status(200).json({ recipes, issue: false });
+    } catch (error) {
+        res.status(200).json({ "error": error.message, issue: true })
+
+    }
+})
 recipeRouter.get("/profile", auth, async (req, res) => {
     const { userId } = req.body;
     try {
@@ -96,6 +125,19 @@ recipeRouter.patch("/update/:recipeId", auth, async (req, res) => {
     }
 })
 
+recipeRouter.patch("/update/comment/:recipeId",  async (req, res) => {
+    const { recipeId } = req.params;
+
+    try {
+            await RecipeModel.updateOne( { _id: recipeId },
+                { $push: { comments: req.body } });
+            res.status(200).json({ "message": "Comment Updated has been updated", comment :  req.body, issue: false });
+
+
+    } catch (error) {
+        res.status(200).json({ "error": error.message, issue: true })
+    }
+})
 recipeRouter.delete("/delete/:recipeId", auth, async (req, res) => {
     const { recipeId } = req.params;
     try {

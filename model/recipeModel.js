@@ -6,10 +6,7 @@ const recipeSchema = mongoose.Schema({
     recipeName: String,
     username: String,
     email: String,
-    comments: [{
-        username: String,
-        review: String
-    }],
+    comments: [],
     difficulty: String,
     prepTime: String,
     cookTime: String,
