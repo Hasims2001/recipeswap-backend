@@ -33,20 +33,20 @@ recipeRouter.get("/", async (req, res) => {
     }
 })
 
-recipeRouter.get("/:id", async (req, res) => {
+recipeRouter.get("/find/:id", async (req, res) => {
     const{id} = req.params;
     try {
         let recipes = await RecipeModel.findOne({_id : id});
         res.status(200).json({ recipes, issue: false });
     } catch (error) {
         res.status(200).json({ "error": error.message, issue: true })
-
     }
 })
-recipeRouter.get("/profile", auth, async (req, res) => {
-    const { email } = req.body;
+recipeRouter.get("/userrecipies", auth, async (req, res) => {
     try {
-        let recipes = await RecipeModel.find({ email: email });
+
+        let recipes = await RecipeModel.find({ email : req.body.email });
+        
         res.status(200).json({ recipes, issue: false });
     } catch (error) {
         res.status(200).json({ "error": error.message, issue: true })
