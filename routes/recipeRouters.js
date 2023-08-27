@@ -54,6 +54,23 @@ recipeRouter.get("/userrecipies", auth, async (req, res) => {
     }
 })
 
+recipeRouter.get("/users/comments", auth, async (req, res) => {
+    try {
+
+        const comment = await RecipeModel.aggregate([
+            {
+              $match: {
+                "comments.useremail": req.body.email
+              }
+            }
+          ]);
+        
+        res.status(200).json({ comments: comment, issue: false });
+    } catch (error) {
+        res.status(200).json({ "error": error.message, issue: true })
+
+    }
+})
 recipeRouter.post("/add", auth, async (req, res) => {
 
     // recipeName: String,
