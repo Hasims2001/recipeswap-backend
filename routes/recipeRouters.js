@@ -33,6 +33,22 @@ recipeRouter.get("/", async (req, res) => {
     }
 })
 
+// search 
+recipeRouter.get("/find/category/:value", async (req, res) => {
+    const{value} = req.params;
+    try {
+        let recipes = await RecipeModel.find({
+            $or: [
+              { "cuisine": value },   
+              { "mealType": value },
+            
+            ]
+          });
+        res.status(200).json({ recipes, issue: false });
+    } catch (error) {
+        res.status(200).json({ "error": error.message, issue: true })
+    }
+})
 recipeRouter.get("/find/:id", async (req, res) => {
     const{id} = req.params;
     try {
