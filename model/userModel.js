@@ -9,6 +9,7 @@ const userSchema = mongoose.Schema({
     following: [String],
     token: String,
     review: [Object],
+    avatar: String,
 })
 
 const UserModel = mongoose.model("user", userSchema);
